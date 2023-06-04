@@ -43,7 +43,7 @@ def colors_explained(data):
     for tr in table.children[0].children:
         first, second = tr.children
         #Squared element with color and family name
-        first.style = {'width':'10%', 'height':'100%'}
+        first.style = {'width':'30%', 'height':'100%'}
         tmp = str(first.children)
         first.children = html.Div(tmp,id=f"info-{tmp}")
         second.children = html.Div("|",style={"overflow":"hidden","border-radius": "10px","width":"15%", "height":"100%", "background-color": second.children,"color": second.children}),
