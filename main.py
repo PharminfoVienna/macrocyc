@@ -1,4 +1,6 @@
 import base64
+import sys
+
 import numpy as np
 import random
 import dash_bootstrap_components as dbc
@@ -95,12 +97,15 @@ if __name__ == '__main__':
         data = pd.read_csv('new.csv')
         images = pd.read_csv('images.csv', index_col=0)
         #Drop the rows for which standard_type is not IC50
-        subset = data[data['standard_type'] == 'IC50']
+        #subset = data[data['standard_type'] == 'IC50']
+        subset = data
         atpair_list = [np.nan] * len(data)
         for i, row in subset.iterrows():
             atpair_list[i] = (row['family'], row['pchembl_value'])
         data['atpair'] = atpair_list
-        print(data)
+        #Print indexes of NAN values in atpair
+        print(data[data['atpair'].isnull()].index)
+        # print(data)
         #data['atpair'] = list(zip(subset['family'], subset['pchembl_value']))
         grouped = data.groupby('canonical_smiles').agg({'atpair': lambda x: x.tolist(), 'x': 'mean', 'y': 'mean','pchembl_value':'median','color':'first'}).reset_index()
         fig = figure(grouped[['x', 'y']])
@@ -116,7 +121,10 @@ if __name__ == '__main__':
                 pad=4
             )
         )
-
+        fig.update_layout({
+            'plot_bgcolor': 'rgba(0, 0, 0, 0)',
+            'paper_bgcolor': 'rgba(0, 0, 0, 0)',
+        })
         app.layout = html.Div(className='document', children=[
             dbc.Row(navbar),
             dbc.Row([
@@ -132,7 +140,7 @@ if __name__ == '__main__':
                 inhibitor landscape of SLC-transporter*, sumbitted to Molecular
                 Informatics
                 #### Questions?
-                Please contact us at: mailto:gerhard.f.ecker@univie.ac.at
+                Please contact us at: mailto:sergey.sosnin@univie.ac.at
                 """,style={'font-size': '18px','margin-left':'20px','text-align':'justify'}), width={"size": 3},align="center"),
 
                 dbc.Col([
